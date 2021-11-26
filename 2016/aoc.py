@@ -36,11 +36,12 @@ def exec_time(f):
   return (ms, res)
 
 def run_day(days, day_num):
-  part1_time, part1_res = exec_time(days[day_num].part1)
-  part2_time, part2_res = exec_time(days[day_num].part2)
-
   print(f'Day {day_num}')
+
+  part1_time, part1_res = exec_time(days[day_num].part1)
   print(f'  Part 1: {part1_res} - {part1_time} ms')
+
+  part2_time, part2_res = exec_time(days[day_num].part2)
   print(f'  Part 2: {part2_res} - {part2_time} ms\n')
 
 def run_all_days(days):
