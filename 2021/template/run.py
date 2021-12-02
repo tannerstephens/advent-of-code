@@ -6,8 +6,8 @@ dir_path = dirname(realpath(__file__))
 with open(f'{dir_path}/input') as f:
   puzzle_input = f.read().split('\n')[:-1]
 
-def parse_input():
-  return puzzle_input[:]
+def parse_input(line_fn=str):
+  return [line_fn(line) for line in puzzle_input]
 
 def part1():
   pi = parse_input()
