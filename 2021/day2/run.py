@@ -13,7 +13,7 @@ def parse_input(line_fn=str):
     yield line_fn(line)
 
 def part1():
-  pattern = compile(r'forward (\d)|down (\d)|up (\d)')
+  pattern = compile(r'd (.)|n (.)|p (.)')
 
   pi = parse_input(lambda line: [int(n) if n else 0 for n in pattern.search(line).groups()])
 
@@ -28,7 +28,7 @@ def part1():
 
 
 def part2():
-  pattern = compile(r'forward (\d)|down (\d)|up (\d)')
+  pattern = compile(r'd (.)|n (.)|p (.)')
 
   pi = parse_input(lambda line: [int(n) if n else 0 for n in pattern.search(line).groups()])
 
