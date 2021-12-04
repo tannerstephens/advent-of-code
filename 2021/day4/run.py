@@ -41,7 +41,6 @@ class BingoBoard:
 
   def check_win(self):
     cols = [[] for _ in self.card]
-    diag = [[], []]
 
     for d, line in enumerate(self.card):
       if sum(line) == 5:
@@ -50,15 +49,8 @@ class BingoBoard:
       for i in range(5):
         cols[i].append(line[i])
 
-      diag[0].append(line[d])
-      diag[1].append(line[-d-1])
-
     for col in cols:
       if sum(col) == 5:
-        return True
-
-    for di in diag:
-      if sum(di) == 5:
         return True
 
     return False
