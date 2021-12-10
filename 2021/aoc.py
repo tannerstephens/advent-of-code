@@ -44,12 +44,21 @@ def run_day(days, day_num):
   part2_time, part2_res = exec_time(days[day_num].part2)
   print(f'  Part 2: {part2_res} - {part2_time} ms\n')
 
+  return part1_time + part2_time
+
 def run_all_days(days):
-  day_keys = list(days.keys())
-  day_keys = sorted(day_keys, key=int)
+  day_keys = sorted(days.keys(), key=int)
+
+  total_time = 0
 
   for day in day_keys:
-    run_day(days, day)
+    total_time += run_day(days, day)
+
+  average_time = round(total_time / len(days), 2)
+  total_time = round(total_time, 2)
+
+  print(f'Total Time: {total_time} ms')
+  print(f'Average Day Time: {average_time} ms')
 
 def parse_arguments():
   parser = argparse.ArgumentParser()
