@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-from tinsel import CLI
+from tinsel import run
 
-CLI().run()
+run()

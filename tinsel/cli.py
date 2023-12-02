@@ -36,6 +36,7 @@ class CLI:
         self.parser.add_argument("day", nargs="?", default=None)
 
         self.parser.add_argument("-c", "--create", action="store_true")
+        self.parser.add_argument("-i", "--input")
 
     def _init_solutions_package(self, solutions_package: str | None) -> None:
         self.solutions_package = solutions_package or self.DEFAULT_SOLUTIONS_PACKAGE
@@ -112,23 +113,31 @@ class CLI:
 
         return "\n".join(f"{pad}{line}" for line in data.splitlines())
 
-    def run_day(self, year: int, day: int, pad: int | None = None):
+    def run_day(
+        self,
+        year: int,
+        day: int,
+        pad: int | None = None,
+        puzzle_input: str | None = None,
+    ) -> float:
         if pad is None:
             pad = 0
 
         day_module = self._load_day(year, day)
 
-        puzzle_input = self.input_handler.get_input(year, day)
+        puzzle_input = puzzle_input or self.input_handler.get_input(year, day)
 
         padding = " " * pad
 
         print(f"{padding}Day {day:>02}")
 
-        part1_res, part1_time = self._time_method(day_module.part1, puzzle_input)
+        state = {}
+
+        part1_res, part1_time = self._time_method(day_module.part1, puzzle_input, state)
         print(f"{padding}  Part 1 - ({part1_time:.2f} ms)")
         print(self._left_pad(str(part1_res), 4 + pad), "\n")
 
-        part2_res, part2_time = self._time_method(day_module.part2, puzzle_input)
+        part2_res, part2_time = self._time_method(day_module.part2, puzzle_input, state)
         print(f"{padding}  Part 2 - ({part2_time:.2f} ms)")
         print(self._left_pad(str(part2_res), 4 + pad), "\n")
 
@@ -150,20 +159,17 @@ class CLI:
         args = self.parser.parse_args()
 
         year = args.year or self._get_latest_year()
-        day = args.day or self._get_latest_day(year)
 
         if args.create:
-            if day is None:
-                self._get_next_day(year)
-            else:
-                day += 1
+            day = args.day or self._get_next_day(year)
 
             self._init_day(year, day)
-
             return
 
         if args.year is None or args.day is not None:
-            self.run_day(year, day)
+            day = args.day or self._get_latest_day(year)
+
+            self.run_day(year, day, puzzle_input=args.input)
             return
 
         self.run_all_days(year)
