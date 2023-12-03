@@ -1,37 +1,33 @@
-from tinsel import Processing
 from math import prod
+
+from tinsel import Processing
 
 
 def part1(puzzle_input: str, state: dict):
     p = Processing(puzzle_input)
 
-    t = 0
+    s = 0
 
-    max_colors = {"red": 12, "green": 13, "blue": 14}
+    for game in p.lines():
+        game: Processing
 
-    for nums, colors in zip(p.findall(r"\d+", int), p.findall(r" ([a-z]+)")):
-        pos = True
-        for num, color in zip(nums[1:], colors):
-            if num > max_colors[color]:
-                pos = False
-                break
+        game_id = game.re_search(r"\d+", mapping=int)
 
-        t += pos * nums[0]
+        state[game_id] = {
+            "red": max(game.re_findall(r"(\d+) red", int)),
+            "green": max(game.re_findall(r"(\d+) green", int)),
+            "blue": max(game.re_findall(r"(\d+) blue", int)),
+        }
 
-    return t
+        if (
+            state[game_id]["red"] <= 12
+            and state[game_id]["green"] <= 13
+            and state[game_id]["blue"] <= 14
+        ):
+            s += game_id
+
+    return s
 
 
-def part2(puzzle_input: str, state: dict):
-    p = Processing(puzzle_input)
-
-    t = 0
-
-    for nums, colors in zip(p.findall(r"\d+", int), p.findall(r" ([a-z]+)")):
-        maxes = {"red": 0, "green": 0, "blue": 0}
-
-        for num, color in zip(nums[1:], colors):
-            maxes[color] = max(maxes[color], num)
-
-        t += prod(maxes.values())
-
-    return t
+def part2(puzzle_input: str, state: dict[int, dict[str, int]]):
+    return sum(prod(game.values()) for game in state.values())
