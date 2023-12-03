@@ -37,6 +37,7 @@ class CLI:
 
         self.parser.add_argument("-c", "--create", action="store_true")
         self.parser.add_argument("-i", "--input")
+        self.parser.add_argument("-A", "--all", action="store_true")
 
     def _init_solutions_package(self, solutions_package: str | None) -> None:
         self.solutions_package = solutions_package or self.DEFAULT_SOLUTIONS_PACKAGE
@@ -81,6 +82,9 @@ class CLI:
         return max(
             int(path.name[-4:]) for path in self.solutions_package_path.glob("y*")
         )
+
+    def _get_all_years(self) -> list[int]:
+        return [int(path.name[1:]) for path in self.solutions_package_path.glob(f"y*")]
 
     def _get_all_days(self, year) -> list[int]:
         return [
@@ -155,10 +159,18 @@ class CLI:
 
         print(f"Total Time - {total_time:.2f} ms")
 
+    def run_all_solutions(self):
+        for year in sorted(self._get_all_years()):
+            self.run_all_days(year)
+
     def run(self) -> None:
         args = self.parser.parse_args()
 
         year = args.year or self._get_latest_year()
+
+        if args.all:
+            self.run_all_solutions()
+            return
 
         if args.create:
             day = args.day or self._get_next_day(year)
