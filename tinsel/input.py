@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from pathlib import Path
 from time import sleep, time
 
@@ -91,6 +92,12 @@ class Input:
     def get_input(self, year: int, day: int) -> str:
         if cache := self._get_cache(year, day):
             return cache
+
+        if (datetime.utcnow() + timedelta(hours=-5)) < datetime(
+            year=year, month=12, day=day
+        ):
+            print("No puzzle input yet!")
+            return None
 
         self._wait_for_rate_limit()
 

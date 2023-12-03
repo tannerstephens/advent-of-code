@@ -25,10 +25,7 @@ def part1(puzzle_input: str, state: dict):
     p = Processing(puzzle_input)
 
     return sum(
-        PRECOMP[l + r]
-        for l, r in zip(
-            p.re_search(r"\d", mapping=str), p[::-1].re_search(r"\d", mapping=str)
-        )
+        PRECOMP[l + r] for l, r in zip(p.re_search(r"\d"), p[::-1].re_search(r"\d"))
     )
 
 
@@ -65,11 +62,7 @@ def part2(puzzle_input: str, state: dict):
     return sum(
         PRECOMP[l + r]
         for l, r in zip(
-            p.re_search(
-                r"\d|one|two|three|four|five|six|seven|eight|nine", mapping=str
-            ),
-            p[::-1].re_search(
-                r"\d|enin|thgie|neves|xis|evif|ruof|eerht|owt|eno", mapping=str
-            ),
+            p.re_search(r"\d|one|two|three|four|five|six|seven|eight|nine"),
+            p[::-1].re_search(r"\d|enin|thgie|neves|xis|evif|ruof|eerht|owt|eno"),
         )
     )

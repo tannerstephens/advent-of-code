@@ -1,7 +1,10 @@
 from collections import UserString
 from functools import cached_property
+from re import Match
 from re import compile as re_compile
-from typing import Callable
+from typing import Callable, Iterator
+
+from .grid import Grid
 
 
 class Processing(UserString):
@@ -29,12 +32,10 @@ class Processing(UserString):
 
     def re_findall[
         T
-    ](self, regex: str, mapping: Callable[[str], T] | None = None) -> (
+    ](self, regex: str, mapping: Callable[[str], T] | None = str) -> (
         list[list[T]] | list[T]
     ):
         compiled_regex = re_compile(regex)
-
-        mapping = mapping or str
 
         if not self.is_multiline:
             return [mapping(match) for match in compiled_regex.findall(self.data)]
@@ -46,12 +47,10 @@ class Processing(UserString):
 
     def re_search[
         T
-    ](self, regex: str, group: int = 0, mapping: Callable[[str], T] | None = None) -> (
+    ](self, regex: str, group: int = 0, mapping: Callable[[str], T] | None = str) -> (
         list[T] | T
     ):
         compiled_regex = re_compile(regex)
-
-        mapping = mapping or str
 
         if not self.is_multiline:
             return mapping(compiled_regex.search(self.data).group(group))
@@ -60,3 +59,16 @@ class Processing(UserString):
             mapping(compiled_regex.search(line).group(group))
             for line in self.lines(str)
         ]
+
+    def re_finditer(
+        self, regex: str
+    ) -> list[Iterator[Match[str]]] | Iterator[Match[str]]:
+        compiled_regex = re_compile(regex)
+
+        if not self.is_multiline:
+            return compiled_regex.finditer(self.data)
+
+        return [compiled_regex.finditer(line) for line in self.lines(str)]
+
+    def to_grid(self):
+        return Grid(self)
