@@ -17,26 +17,19 @@ def part1(puzzle_input: str, state: dict):
     for y, line in enumerate(p.re_finditer(r"\d+")):
         for match in line:
             x = match.start()
-            do = True
 
             for c, cx, cy in grid.indexed_neighbors(x, y, bw=(match.end() - x)):
-                if do and c in SYMBOLS:
+                if c in SYMBOLS:
                     s += (val := int(match.group(0)))
-                    do = False
+                    if c == "*":
+                        state["gears"][(cx, cy)].append(val)
 
-                if c == "*":
-                    state["gears"][(cx, cy)].append(val)
+                    break
 
     return s
 
 
 def part2(puzzle_input: str, state: dict[str, dict[tuple[int, int], list[int]]]):
-    s = 0
-
-    for parts in state["gears"].values():
-        if len(parts) != 2:
-            continue
-
-        s += parts[0] * parts[1]
-
-    return s
+    return sum(
+        parts[0] * parts[1] for parts in state["gears"].values() if len(parts) == 2
+    )

@@ -1,3 +1,4 @@
+import os
 from argparse import ArgumentParser
 from importlib import import_module
 from pathlib import Path
@@ -38,6 +39,7 @@ class CLI:
         self.parser.add_argument("-c", "--create", action="store_true")
         self.parser.add_argument("-i", "--input")
         self.parser.add_argument("-A", "--all", action="store_true")
+        self.parser.add_argument("-V", "--view", action="store_true")
 
     def _init_solutions_package(self, solutions_package: str | None) -> None:
         self.solutions_package = solutions_package or self.DEFAULT_SOLUTIONS_PACKAGE
@@ -117,6 +119,15 @@ class CLI:
 
         return "\n".join(f"{pad}{line}" for line in data.splitlines())
 
+    def _view_input(self, year: int, day: int) -> None:
+        input_file = self.input_handler._get_input_file(year, day)
+        self.input_handler.get_input(year, day)
+
+        if not input_file.exists():
+            raise Exception("No input file available")
+
+        os.spawnlp(os.P_WAIT, "nano", "nano", "--view", input_file)
+
     def run_day(
         self,
         year: int,
@@ -167,6 +178,12 @@ class CLI:
         args = self.parser.parse_args()
 
         year = args.year or self._get_latest_year()
+
+        if args.view:
+            day = args.day or self._get_latest_day(year)
+
+            self._view_input(year, day)
+            return
 
         if args.all:
             self.run_all_solutions()

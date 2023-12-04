@@ -8,19 +8,22 @@ class Grid:
     def __init__(self, puzzle_input: "Processing") -> None:
         self.grid = puzzle_input.lines(str)
 
-    def get_candidates(self, corners: bool, bw: int, bh: int):
-        candidates = []
-
+    def get_candidates(
+        self, corners: bool, bw: int, bh: int
+    ) -> Generator[tuple[int, int], None, None]:
         for dx in range(bw):
-            candidates.extend([(dx, -1), (dx, bh)])
+            yield (dx, -1)
+            yield (dx, bh)
 
         for dy in range(bh):
-            candidates.extend([(-1, dy), (bw, dy)])
+            yield (-1, dy)
+            yield (bw, dy)
 
         if corners:
-            candidates.extend([(-1, -1), (-1, bh), (bw, -1), (bw, bh)])
-
-        return candidates
+            yield (-1, -1)
+            yield (-1, bh)
+            yield (bw, -1)
+            yield (bw, bh)
 
     def neighbor_coords(
         self, x: int, y: int, corners=True, bw: int = 1, bh: int = 1
