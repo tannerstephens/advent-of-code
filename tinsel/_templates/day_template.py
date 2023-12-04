@@ -1,9 +1,9 @@
-from tinsel import Processing
+from tinsel import BaseSolution, Processing
 
 
-def part1(puzzle_input: str, state: dict):
-    p = Processing(puzzle_input)
+class Solution(BaseSolution):
+    def part1(self, puzzle_input: str):
+        p = Processing(puzzle_input)
 
-
-def part2(puzzle_input: str, state: dict):
-    p = Processing(puzzle_input)
+    def part2(self, puzzle_input: str):
+        p = Processing(puzzle_input)

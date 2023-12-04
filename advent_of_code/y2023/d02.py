@@ -1,33 +1,36 @@
 from math import prod
 
-from tinsel import Processing
+from tinsel import Processing, BaseSolution
 
 
-def part1(puzzle_input: str, state: dict):
-    p = Processing(puzzle_input)
+class Solution(BaseSolution):
+    def part1(self, puzzle_input: str):
+        p = Processing(puzzle_input)
 
-    s = 0
+        s = 0
 
-    for game in p.lines():
-        game: Processing
+        self.state.games = {}
 
-        game_id = game.re_search(r"\d+", mapping=int)
+        for game in p.lines():
+            game: Processing
 
-        state[game_id] = {
-            "red": max(game.re_findall(r"(\d+) red", int)),
-            "green": max(game.re_findall(r"(\d+) green", int)),
-            "blue": max(game.re_findall(r"(\d+) blue", int)),
-        }
+            game_id = game.re_search(r"\d+", mapping=int)
 
-        if (
-            state[game_id]["red"] <= 12
-            and state[game_id]["green"] <= 13
-            and state[game_id]["blue"] <= 14
-        ):
-            s += game_id
+            self.state.games[game_id] = {
+                "red": max(game.re_findall(r"(\d+) red", int)),
+                "green": max(game.re_findall(r"(\d+) green", int)),
+                "blue": max(game.re_findall(r"(\d+) blue", int)),
+            }
 
-    return s
+            if (
+                self.state.games[game_id]["red"] <= 12
+                and self.state.games[game_id]["green"] <= 13
+                and self.state.games[game_id]["blue"] <= 14
+            ):
+                s += game_id
+
+        return s
 
 
-def part2(puzzle_input: str, state: dict[int, dict[str, int]]):
-    return sum(prod(game.values()) for game in state.values())
+    def part2(self, puzzle_input: str):
+        return sum(prod(game.values()) for game in self.state.games.values())

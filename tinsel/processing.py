@@ -2,7 +2,7 @@ from collections import UserString
 from functools import cached_property
 from re import Match
 from re import compile as re_compile
-from typing import Callable, Iterator
+from typing import Callable, Generator, Iterator
 
 from .grid import Grid
 
@@ -72,3 +72,18 @@ class Processing(UserString):
 
     def to_grid(self):
         return Grid(self)
+
+    def integers(self) -> Generator[int, None, None]:
+        for line in self.lines(str):
+            yield (int(line))
+
+    def split[
+        T
+    ](
+        self,
+        sep: str | None = None,
+        maxsplit: int = -1,
+        mapping: Callable[[str], T] | None = str,
+    ) -> Generator[T, None, None]:
+        for seg in super().split(sep, maxsplit):
+            yield mapping(seg)

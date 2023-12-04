@@ -1,35 +1,37 @@
 from collections import defaultdict
 
-from tinsel import Processing
-
-SYMBOLS = set("!@#$%^&*()_+-=/")
+from tinsel import BaseSolution, Processing
 
 
-def part1(puzzle_input: str, state: dict):
-    p = Processing(puzzle_input)
+class Solution(BaseSolution):
+    SYMBOLS = set("!@#$%^&*()_+-=/")
 
-    grid = p.to_grid()
+    def part1(self, puzzle_input: str):
+        p = Processing(puzzle_input)
 
-    s = 0
+        grid = p.to_grid()
 
-    state["gears"] = defaultdict(list)
+        s = 0
 
-    for y, line in enumerate(p.re_finditer(r"\d+")):
-        for match in line:
-            x = match.start()
+        self.state.gears = defaultdict(list)
 
-            for c, cx, cy in grid.indexed_neighbors(x, y, bw=(match.end() - x)):
-                if c in SYMBOLS:
-                    s += (val := int(match.group(0)))
-                    if c == "*":
-                        state["gears"][(cx, cy)].append(val)
+        for y, line in enumerate(p.re_finditer(r"\d+")):
+            for match in line:
+                x = match.start()
 
-                    break
+                for c, cx, cy in grid.indexed_neighbors(x, y, bw=(match.end() - x)):
+                    if c in self.SYMBOLS:
+                        s += (val := int(match.group(0)))
+                        if c == "*":
+                            self.state.gears[(cx, cy)].append(val)
 
-    return s
+                        break
 
+        return s
 
-def part2(puzzle_input: str, state: dict[str, dict[tuple[int, int], list[int]]]):
-    return sum(
-        parts[0] * parts[1] for parts in state["gears"].values() if len(parts) == 2
-    )
+    def part2(self, puzzle_input: str):
+        return sum(
+            parts[0] * parts[1]
+            for parts in self.state.gears.values()
+            if len(parts) == 2
+        )

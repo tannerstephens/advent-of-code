@@ -7,16 +7,9 @@ from time import time
 from typing import Any, Protocol, cast
 
 from .input import Input
+from .solution import BaseSolution
 
 DAY_TEMPLATE = Path(__file__).parent.resolve() / "_templates" / "day_template.py"
-
-
-class DayModule(Protocol):
-    def part1(self, puzzle_input: str) -> Any:
-        pass
-
-    def part2(self, puzzle_input: str) -> Any:
-        pass
 
 
 class CLI:
@@ -33,8 +26,8 @@ class CLI:
     def _init_parser(self) -> None:
         self.parser = ArgumentParser()
 
-        self.parser.add_argument("year", nargs="?", default=None)
-        self.parser.add_argument("day", nargs="?", default=None)
+        self.parser.add_argument("year", nargs="?", default=None, type=int)
+        self.parser.add_argument("day", nargs="?", default=None, type=int)
 
         self.parser.add_argument("-c", "--create", action="store_true")
         self.parser.add_argument("-i", "--input")
@@ -70,7 +63,7 @@ class CLI:
 
         copy(DAY_TEMPLATE, day_path)
 
-    def _load_day(self, year: int, day: int) -> DayModule:
+    def _load_day(self, year: int, day: int) -> BaseSolution:
         module_path = self._day_path(year, day)
 
         if not module_path.exists():
@@ -78,7 +71,7 @@ class CLI:
 
         module = import_module(f"{self.solutions_package}.y{year}.d{day:>02}")
 
-        return cast(DayModule, module)
+        return module.Solution()
 
     def _get_latest_year(self) -> int:
         return max(
@@ -138,7 +131,7 @@ class CLI:
         if pad is None:
             pad = 0
 
-        day_module = self._load_day(year, day)
+        day_solution = self._load_day(year, day)
 
         puzzle_input = puzzle_input or self.input_handler.get_input(year, day)
 
@@ -146,19 +139,17 @@ class CLI:
 
         print(f"{padding}Day {day:>02}")
 
-        state = {}
-
-        part1_res, part1_time = self._time_method(day_module.part1, puzzle_input, state)
+        part1_res, part1_time = self._time_method(day_solution.part1, puzzle_input)
         print(f"{padding}  Part 1 - ({part1_time:.2f} ms)")
         print(self._left_pad(str(part1_res), 4 + pad), "\n")
 
-        part2_res, part2_time = self._time_method(day_module.part2, puzzle_input, state)
+        part2_res, part2_time = self._time_method(day_solution.part2, puzzle_input)
         print(f"{padding}  Part 2 - ({part2_time:.2f} ms)")
         print(self._left_pad(str(part2_res), 4 + pad), "\n")
 
         return part1_time + part2_time
 
-    def run_all_days(self, year: int):
+    def run_all_days(self, year: int) -> float:
         days = self._get_all_days(year)
 
         print(f"Year {year}")
@@ -170,9 +161,16 @@ class CLI:
 
         print(f"Total Time - {total_time:.2f} ms")
 
+        return total_time
+
     def run_all_solutions(self):
+        all_years_time = 0
+        print("Running all completed solutions")
         for year in sorted(self._get_all_years()):
-            self.run_all_days(year)
+            print()
+            all_years_time += self.run_all_days(year)
+
+        print(f"Total time for all solutions - {all_years_time:.2f} ms")
 
     def run(self) -> None:
         args = self.parser.parse_args()
@@ -180,7 +178,7 @@ class CLI:
         year = args.year or self._get_latest_year()
 
         if args.view:
-            day = args.day or self._get_latest_day(year)
+            day = args.day or self._get_latest_day(year) or 1
 
             self._view_input(year, day)
             return
@@ -196,7 +194,7 @@ class CLI:
             return
 
         if args.year is None or args.day is not None:
-            day = args.day or self._get_latest_day(year)
+            day = args.day or self._get_latest_day(year) or 1
 
             self.run_day(year, day, puzzle_input=args.input)
             return
