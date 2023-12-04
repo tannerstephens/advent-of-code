@@ -1,6 +1,6 @@
 from math import prod
 
-from tinsel import Processing, BaseSolution
+from tinsel import BaseSolution, Processing
 
 
 class Solution(BaseSolution):
@@ -11,9 +11,7 @@ class Solution(BaseSolution):
 
         self.state.games = {}
 
-        for game in p.lines():
-            game: Processing
-
+        for game in p.lines(Processing):
             game_id = game.re_search(r"\d+", mapping=int)
 
             self.state.games[game_id] = {
@@ -30,7 +28,6 @@ class Solution(BaseSolution):
                 s += game_id
 
         return s
-
 
     def part2(self, puzzle_input: str):
         return sum(prod(game.values()) for game in self.state.games.values())

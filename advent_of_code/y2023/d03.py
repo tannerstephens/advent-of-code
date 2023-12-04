@@ -30,8 +30,4 @@ class Solution(BaseSolution):
         return s
 
     def part2(self, puzzle_input: str):
-        return sum(
-            parts[0] * parts[1]
-            for parts in self.state.gears.values()
-            if len(parts) == 2
-        )
+        return sum(parts[0] * parts[1] for parts in self.state.gears.values() if len(parts) == 2)

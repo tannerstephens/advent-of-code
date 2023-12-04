@@ -8,9 +8,7 @@ class Grid:
     def __init__(self, puzzle_input: "Processing") -> None:
         self.grid = puzzle_input.lines(str)
 
-    def get_candidates(
-        self, corners: bool, bw: int, bh: int
-    ) -> Generator[tuple[int, int], None, None]:
+    def get_candidates(self, corners: bool, bw: int, bh: int) -> Generator[tuple[int, int], None, None]:
         for dx in range(bw):
             yield (dx, -1)
             yield (dx, bh)
@@ -41,9 +39,7 @@ class Grid:
         for tx, ty in self.neighbor_coords(x, y, corners, bw, bh):
             yield self.get(tx, ty), tx, ty
 
-    def neighbors(
-        self, x: int, y: int, corners=True, bw: int = 1, bh: int = 1
-    ) -> Generator[str, None, None]:
+    def neighbors(self, x: int, y: int, corners=True, bw: int = 1, bh: int = 1) -> Generator[str, None, None]:
         for tx, ty in self.neighbor_coords(x, y, corners, bw, bh):
             yield self.get(tx, ty)
 

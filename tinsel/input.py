@@ -57,9 +57,7 @@ class Input:
         with open(self.rate_limit_file) as f:
             last_request_time = float(f.read())
 
-        new_remaining_time = remaining_time = int(
-            self.RATE_LIMIT - (time() - last_request_time)
-        )
+        new_remaining_time = remaining_time = int(self.RATE_LIMIT - (time() - last_request_time))
 
         for _ in range(0, remaining_time, 15):
             print(f"Waiting {new_remaining_time} seconds before grabbing input")
@@ -93,18 +91,14 @@ class Input:
         if cache := self._get_cache(year, day):
             return cache
 
-        if (datetime.utcnow() + timedelta(hours=-5)) < datetime(
-            year=year, month=12, day=day
-        ):
+        if (datetime.utcnow() + timedelta(hours=-5)) < datetime(year=year, month=12, day=day):
             print("No puzzle input yet!")
             return None
 
         self._wait_for_rate_limit()
 
         input_url = self.AOC_INPUT_FORMAT_URL.format(year=year, day=day)
-        aoc_input = requests.get(
-            input_url, headers=self.headers, cookies=self.cookies
-        ).content.decode()
+        aoc_input = requests.get(input_url, headers=self.headers, cookies=self.cookies).content.decode()
 
         self._update_cache(year, day, aoc_input)
         self._update_rate_limit()

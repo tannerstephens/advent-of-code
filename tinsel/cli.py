@@ -74,18 +74,13 @@ class CLI:
         return module.Solution()
 
     def _get_latest_year(self) -> int:
-        return max(
-            int(path.name[-4:]) for path in self.solutions_package_path.glob("y*")
-        )
+        return max(int(path.name[-4:]) for path in self.solutions_package_path.glob("y*"))
 
     def _get_all_years(self) -> list[int]:
         return [int(path.name[1:]) for path in self.solutions_package_path.glob(f"y*")]
 
     def _get_all_days(self, year) -> list[int]:
-        return [
-            int(path.name[-5:-3])
-            for path in self.solutions_package_path.glob(f"y{year}/d*.py")
-        ]
+        return [int(path.name[-5:-3]) for path in self.solutions_package_path.glob(f"y{year}/d*.py")]
 
     def _get_latest_day(self, year) -> int | None:
         if days := self._get_all_days(year):
@@ -172,6 +167,10 @@ class CLI:
 
         print(f"Total time for all solutions - {all_years_time:.2f} ms")
 
+    def _edit_day(self, year: int, day: int):
+        day_path = self._day_path(year, day)
+        os.execlp("code", "code", ".", day_path)
+
     def run(self) -> None:
         args = self.parser.parse_args()
 
@@ -191,6 +190,7 @@ class CLI:
             day = args.day or self._get_next_day(year)
 
             self._init_day(year, day)
+            self._edit_day(year, day)
             return
 
         if args.year is None or args.day is not None:

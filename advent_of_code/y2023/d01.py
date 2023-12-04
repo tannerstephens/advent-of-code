@@ -18,16 +18,11 @@ class Solution(BaseSolution):
             "9": "9",
         }
 
-        PRECOMP = {
-            l + r: int(ALL_VALUES[l] + ALL_VALUES[r])
-            for l, r in product(ALL_VALUES.keys(), repeat=2)
-        }
+        PRECOMP = {l + r: int(ALL_VALUES[l] + ALL_VALUES[r]) for l, r in product(ALL_VALUES.keys(), repeat=2)}
 
         p = Processing(puzzle_input)
 
-        return sum(
-            PRECOMP[l + r] for l, r in zip(p.re_search(r"\d"), p[::-1].re_search(r"\d"))
-        )
+        return sum(PRECOMP[l + r] for l, r in zip(p.re_search(r"\d"), p[::-1].re_search(r"\d")))
 
     def part2(self, puzzle_input: str):
         ALL_VALUES = {
@@ -52,10 +47,7 @@ class Solution(BaseSolution):
             "nine": "9",
         }
 
-        PRECOMP = {
-            l + r[::-1]: int(ALL_VALUES[l] + ALL_VALUES[r])
-            for l, r in product(ALL_VALUES.keys(), repeat=2)
-        }
+        PRECOMP = {l + r[::-1]: int(ALL_VALUES[l] + ALL_VALUES[r]) for l, r in product(ALL_VALUES.keys(), repeat=2)}
 
         p = Processing(puzzle_input)
 
