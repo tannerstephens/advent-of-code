@@ -154,7 +154,7 @@ class CLI:
         for day in sorted(days):
             total_time += self.run_day(year, day, pad=2)
 
-        print(f"Total Time - {total_time:.2f} ms")
+        print(f"Total Time - {total_time:.2f} ms ({total_time / (len(days)*2):.2f} ms / part)")
 
         return total_time
 
