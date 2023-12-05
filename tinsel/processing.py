@@ -20,7 +20,7 @@ class Processing(UserString):
     def is_multiline(self):
         return "\n" in self.data
 
-    def lines[T](self, mapping: Callable[[str], T] | None = str) -> list[T]:
+    def lines[T](self, mapping: Callable[[str], T] = str) -> list[T]:
         mapping = mapping or Processing
 
         key = str(type(mapping("")))
@@ -30,7 +30,10 @@ class Processing(UserString):
 
         return self._lines_cache[key]
 
-    def re_findall[T](self, regex: str, mapping: Callable[[str], T] | None = str) -> list[list[T]] | list[T]:
+    def grouped_lines[T](self, n: int = 2, mapping: Callable[[str], T] = str) -> list[list[T]]:
+        return zip(*[iter(self.lines(mapping=mapping))] * n)
+
+    def re_findall[T](self, regex: str, mapping: Callable[[str], T] = str) -> list[list[T]] | list[T]:
         compiled_regex = re_compile(regex)
 
         if not self.is_multiline:
@@ -38,7 +41,7 @@ class Processing(UserString):
 
         return [[mapping(match) for match in compiled_regex.findall(line)] for line in self.lines(str)]
 
-    def re_search[T](self, regex: str, group: int = 0, mapping: Callable[[str], T] | None = str) -> list[T] | T:
+    def re_search[T](self, regex: str, group: int = 0, mapping: Callable[[str], T] = str) -> list[T] | T:
         compiled_regex = re_compile(regex)
 
         if not self.is_multiline:
@@ -63,7 +66,7 @@ class Processing(UserString):
 
     def split_each_line[
         T
-    ](self, sep: str | None = None, mapping: Callable[[str], T] | None = str) -> Generator[
+    ](self, sep: str | None = None, mapping: Callable[[str], T] = str) -> Generator[
         Generator[T, None, None], None, None
     ]:
         for line in self.lines():
@@ -75,7 +78,7 @@ class Processing(UserString):
         self,
         sep: str | None = None,
         maxsplit: int = -1,
-        mapping: Callable[[str], T] | None = str,
+        mapping: Callable[[str], T] = str,
     ) -> Generator[
         T, None, None
     ]:
