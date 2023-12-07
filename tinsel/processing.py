@@ -72,6 +72,14 @@ class Processing(UserString):
         for line in self.lines():
             yield map(mapping, line.split(sep))
 
+    def counts(self):
+        counts = {}
+
+        for c in set(self.data):
+            counts[c] = self.count(c)
+
+        return counts
+
     def split[
         T
     ](
