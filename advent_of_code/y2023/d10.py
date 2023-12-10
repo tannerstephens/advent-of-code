@@ -2,13 +2,13 @@ from tinsel import BaseSolution, Grid, Processing
 
 
 class PipeGrid(Grid):
-    PATHING = {
-        "|": ((0, 1, 0, -1)),
-        "-": ((1, 0, -1, 0)),
-        "L": ((0, -1, 1, 0)),
-        "J": ((0, -1, -1, 0)),
-        "7": ((-1, 0, 0, 1)),
-        "F": ((1, 0, 0, 1)),
+    PATHING: dict[str, tuple[int, int, int, int]] = {
+        "|": (0, 1, 0, -1),
+        "-": (1, 0, -1, 0),
+        "L": (0, -1, 1, 0),
+        "J": (0, -1, -1, 0),
+        "7": (-1, 0, 0, 1),
+        "F": (1, 0, 0, 1),
     }
 
     def __init__(self, puzzle_input: str) -> None:
@@ -16,21 +16,16 @@ class PipeGrid(Grid):
 
         self.grid = {}
         self.start = None
-        self.groud = set()
 
         for y, line in enumerate(p.lines()):
             for x, c in enumerate(line):
-                if c in self.PATHING:
-                    dx1, dy1, dx2, dy2 = self.PATHING[c]
-
-                    one = (x + dx1, y + dy1)
-                    two = (x + dx2, y + dy2)
+                if path := self.PATHING.get(c):
+                    one = (x + path[0], y + path[1])
+                    two = (x + path[2], y + path[3])
 
                     self.grid[(x, y)] = {one: two, two: one}
                 elif c == "S":
                     self.start = (x, y)
-                else:
-                    self.groud.add((x, y))
 
     def get(self, x: int, y: int):
         return self.grid[(x, y)]
@@ -38,39 +33,36 @@ class PipeGrid(Grid):
     def coord_in_grid(self, x: int, y: int) -> bool:
         return (x, y) in self.grid
 
-    def __contains__(self, elem):
-        return elem in self.grid
-
 
 class Solution(BaseSolution):
-    def loop_length(self, pipe_grid: PipeGrid, x: int, y: int) -> tuple[int, list[tuple[int, int]]] | None:
+    def loop_length(self, pipe_grid: PipeGrid, x: int, y: int) -> list[tuple[int, int]] | None:
         last_x, last_y = pipe_grid.start
 
-        length = 1
         points = [(x, y)]
 
         while (x, y) != pipe_grid.start:
-            if (x, y) not in pipe_grid:
+            if not pipe_grid.coord_in_grid(x, y):
                 return None
 
-            length += 1
-            tx, ty = x, y
-            x, y = pipe_grid.get(x, y)[(last_x, last_y)]
-            points.append((x, y))
-            last_x, last_y = tx, ty
+            (x, y), last_x, last_y = pipe_grid.get(x, y)[(last_x, last_y)], x, y
 
-        return length, points
+            points.append((x, y))
+
+        return points
 
     def part1(self, puzzle_input: str):
         self.pipe_grid = PipeGrid(puzzle_input)
 
         for x, y in self.pipe_grid.neighbor_coords(*self.pipe_grid.start):
             if l := self.loop_length(self.pipe_grid, x, y):
-                self.loop_points = l[1]
-                return l[0] // 2
+                self.loop_points = l
+                return len(l) // 2
 
     def part2(self, puzzle_input: str):
+        # Pick's Formula
         top = 0
+
+        num_points = len(self.loop_points)
 
         self.loop_points.append(self.loop_points[0])
 
@@ -79,6 +71,4 @@ class Solution(BaseSolution):
 
             top += x1 * y2 - y1 * x2
 
-        area = abs(top // 2)
-
-        return area + 1 - (len(self.loop_points) // 2)
+        return (top - num_points) // 2 + 1
