@@ -23,6 +23,9 @@ class Grid:
             yield (bw, -1)
             yield (bw, bh)
 
+    def coord_in_grid(self, x: int, y: int) -> bool:
+        return 0 <= x < len(self.grid[0]) and 0 <= y < len(self.grid)
+
     def neighbor_coords(
         self, x: int, y: int, corners=True, bw: int = 1, bh: int = 1
     ) -> Generator[tuple[int, int], None, None]:
@@ -30,7 +33,7 @@ class Grid:
             tx = x + dx
             ty = y + dy
 
-            if 0 <= tx < len(self.grid[0]) and 0 <= ty < len(self.grid):
+            if self.coord_in_grid(tx, ty):
                 yield (tx, ty)
 
     def indexed_neighbors(

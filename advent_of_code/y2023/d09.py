@@ -1,5 +1,3 @@
-from collections import deque
-
 from tinsel import BaseSolution, Processing
 
 
