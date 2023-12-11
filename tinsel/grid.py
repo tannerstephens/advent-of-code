@@ -56,3 +56,10 @@ class Grid:
 
     def get(self, x: int, y: int):
         return self.grid[y][x]
+
+    def rows(self):
+        return iter(self.grid)
+
+    def columns(self):
+        for x in range(len(self.grid[0])):
+            yield [line[x] for line in self.grid]
