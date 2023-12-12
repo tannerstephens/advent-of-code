@@ -49,6 +49,14 @@ class Processing(UserString):
 
         return [mapping(compiled_regex.search(line).group(group)) for line in self.lines(str)]
 
+    def re_split[T](self, regex: str, mapping: Callable[[str], T] = str) -> list[list[T]] | list[T]:
+        compiled_regex = re_compile(regex)
+
+        if not self.is_multiline:
+            return [mapping(elem) for elem in compiled_regex.split(self.data)]
+
+        return [[mapping(elem) for elem in compiled_regex.split(line)] for line in self.lines(str)]
+
     def re_finditer(self, regex: str) -> list[Iterator[Match[str]]] | Iterator[Match[str]]:
         compiled_regex = re_compile(regex)
 
