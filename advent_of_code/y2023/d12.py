@@ -44,36 +44,31 @@ class Solution(BaseSolution):
         if cache_key in cache:
             return cache[cache_key]
 
-        try:
-            if puzzle[to_process] == "?":
-                solutions = 0
-                if block_length < clues[clue_index]:
-                    solutions += self.count_solutions(
-                        puzzle.replace("?", "#", 1), clues, to_process, clue_index, block_length + 1, cache
-                    )
-                if block_length == 0:
-                    solutions += self.count_solutions(
-                        puzzle.replace("?", ".", 1), clues, to_process, clue_index, 0, cache
-                    )
-                elif block_length == clues[clue_index]:
-                    solutions += self.count_solutions(
-                        puzzle.replace("?", ".", 1), clues, to_process, clue_index + 1, 0, cache
-                    )
+        if puzzle[to_process] == "?":
+            solutions = 0
+            if block_length < clues[clue_index]:
+                solutions += self.count_solutions(
+                    puzzle.replace("?", "#", 1), clues, to_process, clue_index, block_length + 1, cache
+                )
+            if block_length == 0:
+                solutions += self.count_solutions(puzzle.replace("?", ".", 1), clues, to_process, clue_index, 0, cache)
+            elif block_length == clues[clue_index]:
+                solutions += self.count_solutions(
+                    puzzle.replace("?", ".", 1), clues, to_process, clue_index + 1, 0, cache
+                )
 
-                cache[cache_key] = solutions
+            cache[cache_key] = solutions
 
-                return solutions
+            return solutions
 
-            elif puzzle[to_process] == "#":
-                if (block_length + 1) > clues[clue_index]:
-                    return 0
-                return self.count_solutions(puzzle, clues, to_process, clue_index, block_length + 1, cache)
-            else:
-                if block_length and block_length < clues[clue_index]:
-                    return 0
-                return self.count_solutions(puzzle, clues, to_process, clue_index + (block_length > 0), 0, cache)
-        except IndexError:
-            return 0
+        elif puzzle[to_process] == "#":
+            if (block_length + 1) > clues[clue_index]:
+                return 0
+            return self.count_solutions(puzzle, clues, to_process, clue_index, block_length + 1, cache)
+        else:
+            if block_length and block_length < clues[clue_index]:
+                return 0
+            return self.count_solutions(puzzle, clues, to_process, clue_index + (block_length > 0), 0, cache)
 
     def part1(self, puzzle_input: str):
         p = Processing(puzzle_input)
