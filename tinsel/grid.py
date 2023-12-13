@@ -1,12 +1,12 @@
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING, Generator, Union
 
 if TYPE_CHECKING:
     from .processing import Processing
 
 
 class Grid:
-    def __init__(self, puzzle_input: "Processing") -> None:
-        self.grid = puzzle_input.lines(str)
+    def __init__(self, puzzle_input: Union["Processing", str]) -> None:
+        self.grid = puzzle_input.splitlines()
 
     def get_candidates(self, corners: bool, bw: int, bh: int) -> Generator[tuple[int, int], None, None]:
         for dx in range(bw):
@@ -63,3 +63,6 @@ class Grid:
     def columns(self):
         for x in range(len(self.grid[0])):
             yield [line[x] for line in self.grid]
+
+    def horizontal_split(self, row: int) -> tuple["Grid", "Grid"]:
+        return Grid(self.grid[:row]), Grid(self.grid[row:])

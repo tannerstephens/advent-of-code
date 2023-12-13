@@ -20,15 +20,18 @@ class Processing(UserString):
     def is_multiline(self):
         return "\n" in self.data
 
-    def lines[T](self, mapping: Callable[[str], T] = str) -> list[T]:
+    def lines[T](self, mapping: Callable[[str], T] = str, keepends: bool = False) -> list[T]:
         mapping = mapping or Processing
 
         key = str(type(mapping("")))
 
         if key not in self._lines_cache:
-            self._lines_cache[key] = [mapping(line) for line in self.splitlines()]
+            self._lines_cache[key] = [mapping(line) for line in self.data.splitlines(keepends=keepends)]
 
         return self._lines_cache[key]
+
+    def splitlines(self, keepends: bool = False) -> list[str]:
+        return self.lines()
 
     def grouped_lines[T](self, n: int = 2, mapping: Callable[[str], T] = str) -> list[list[T]]:
         return zip(*[iter(self.lines(mapping=mapping))] * n)
