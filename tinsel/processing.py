@@ -20,6 +20,9 @@ class Processing(UserString):
     def is_multiline(self):
         return "\n" in self.data
 
+    def characters(self):
+        return iter(self.data)
+
     def lines[T](self, mapping: Callable[[str], T] = str, keepends: bool = False) -> list[T]:
         mapping = mapping or Processing
 
