@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 class Grid:
     def __init__(self, puzzle_input: Union["Processing", str]) -> None:
-        self.grid = puzzle_input.splitlines()
+        self.grid = [[c for c in line] for line in puzzle_input.splitlines()]
 
     def get_candidates(self, corners: bool, bw: int, bh: int) -> Generator[tuple[int, int], None, None]:
         for dx in range(bw):

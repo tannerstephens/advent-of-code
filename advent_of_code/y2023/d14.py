@@ -4,28 +4,24 @@ from tinsel import BaseSolution, Processing
 
 
 class Cycles:
-    def __init__(self, window_size=25, min_window=2):
-        self.window = []
+    def __init__(self, window_size=25):
+        self.window = deque()
         self.window_size = window_size
         self.max_size = window_size * 2
-        self.min_window = min_window
 
     def add(self, n: int):
         self.window.append(n)
 
         if len(self.window) > self.max_size:
-            self.window = self.window[1:]
+            self.window.popleft()
 
     def check_for_cycles(self):
-        for cycle_size in range(self.min_window, self.window_size):
-            if len(self.window) > cycle_size * 2:
-                lhs = self.window[-cycle_size * 2 : -cycle_size]
-                rhs = self.window[-cycle_size:]
+        working_window = list(self.window)
+        for cycle_size in range(2, min(self.window_size, len(working_window))):
+            lhs = working_window[-cycle_size * 2 : -cycle_size]
 
-                if lhs == rhs:
-                    return rhs
-            else:
-                break
+            if lhs == working_window[-cycle_size:]:
+                return lhs
 
 
 class Solution(BaseSolution):
@@ -65,9 +61,11 @@ class Solution(BaseSolution):
         return list(zip(*sat_map[::-1]))
 
     def get_pattern(self, sat_map: list[list[str]]) -> list[int]:
-        seq = Cycles(min_window=10)
+        seq = Cycles()
 
-        for wait in range(1, 10000):
+        wait = 0
+
+        while wait := wait + 1:
             for _ in range(4):
                 sat_map = self.rotate(self.tilt_north(sat_map))
 
@@ -79,19 +77,11 @@ class Solution(BaseSolution):
     def part1(self, puzzle_input: str):
         p = Processing(puzzle_input)
 
-        sat_map = [[c for c in line] for line in p.lines()]
+        self.sat_map = [[c for c in line] for line in p.lines()]
 
-        self.sat_map = self.tilt_north(sat_map)
-
-        return self.calculate_weight(self.sat_map)
+        return self.calculate_weight(self.tilt_north(self.sat_map))
 
     def part2(self, puzzle_input: str):
-        p = Processing(puzzle_input)
+        wait, pattern = self.get_pattern(self.sat_map)
 
-        sat_map = [[c for c in line] for line in p.lines()]
-
-        wait, pattern = self.get_pattern(sat_map)
-
-        target = (1000000000 - wait - 1) % len(pattern)
-
-        return pattern[target]
+        return pattern[(999999999 - wait) % len(pattern)]
