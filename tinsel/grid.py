@@ -66,3 +66,15 @@ class Grid:
 
     def horizontal_split(self, row: int) -> tuple["Grid", "Grid"]:
         return Grid(self.grid[:row]), Grid(self.grid[row:])
+
+    def __getitem__(self, elem):
+        return self.grid[elem]
+
+    def __repr__(self):
+        return "\n".join("".join(line) for line in self.grid)
+
+    def copy(self):
+        return Grid(repr(self))
+
+    def __len__(self):
+        return len(self.grid)
