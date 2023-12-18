@@ -3,8 +3,7 @@ from argparse import ArgumentParser
 from importlib import import_module
 from pathlib import Path
 from shutil import copy
-from time import time
-from typing import Any, Protocol, cast
+from timeit import default_timer
 
 from .input import Input
 from .solution import BaseSolution
@@ -94,9 +93,9 @@ class CLI:
         return latest + 1
 
     def _time_method(self, method, *args, **kwargs):
-        begin_time = time()
+        begin_time = default_timer()
         res = method(*args, **kwargs)
-        end_time = time()
+        end_time = default_timer()
 
         runtime = end_time - begin_time
 
