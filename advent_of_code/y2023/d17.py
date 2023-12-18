@@ -69,11 +69,9 @@ class Pathfinder:
 
 class Solution(BaseSolution):
     def part1(self, puzzle_input: str):
-        g = Grid(puzzle_input, int)
-        path_finder = Pathfinder(g)
-        return path_finder.distance(0, 0, g.width - 1, g.height - 1)
+        self.g = Grid(puzzle_input, int)
+        self.path_finder = Pathfinder(self.g)
+        return self.path_finder.distance(0, 0, self.g.width - 1, self.g.height - 1)
 
     def part2(self, puzzle_input: str):
-        g = Grid(puzzle_input, int)
-        path_finder = Pathfinder(g)
-        return path_finder.distance(0, 0, g.width - 1, g.height - 1, min_straight=4, max_straight=10)
+        return self.path_finder.distance(0, 0, self.g.width - 1, self.g.height - 1, min_straight=4, max_straight=10)
