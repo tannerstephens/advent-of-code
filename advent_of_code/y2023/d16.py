@@ -1,13 +1,12 @@
 import sys
 
 from tinsel import BaseSolution, Grid, Processing
+from tinsel.consts import DIRS
 
 sys.setrecursionlimit(10000)
 
 
 class Solution(BaseSolution):
-    DIRS = {0: (0, -1), 1: (1, 0), 2: (0, 1), 3: (-1, 0)}
-
     NEW_DIRS = {
         0: {"\\": [3], "/": [1], "-": [1, 3]},
         1: {"\\": [2], "/": [0], "|": [0, 2]},
@@ -22,7 +21,7 @@ class Solution(BaseSolution):
         if dir_seen is None:
             dir_seen = set()
 
-        dx, dy = self.DIRS[d]
+        dx, dy = DIRS[d]
         nx, ny = x + dx, y + dy
 
         if (nx, ny, d) in dir_seen:

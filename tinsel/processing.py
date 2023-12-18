@@ -71,8 +71,8 @@ class Processing(UserString):
 
         return [compiled_regex.finditer(line) for line in self.lines(str)]
 
-    def to_grid(self):
-        return Grid(self)
+    def to_grid[T](self, mapping: Callable[[str], T] = str):
+        return Grid(self, mapping=mapping)
 
     def integers(self) -> Generator[int, None, None]:
         for line in self.lines(str):

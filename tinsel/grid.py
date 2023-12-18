@@ -1,12 +1,18 @@
-from typing import TYPE_CHECKING, Generator, Union
+import math
+from typing import TYPE_CHECKING, Callable, Generator, Union
 
 if TYPE_CHECKING:
     from .processing import Processing
 
 
-class Grid:
-    def __init__(self, puzzle_input: Union["Processing", str]) -> None:
-        self.grid = [[c for c in line] for line in puzzle_input.splitlines()]
+class Grid[T]:
+    def __init__(
+        self, puzzle_input: Union["Processing", str, list[list[T]]], mapping: Callable[[str], T] = str
+    ) -> None:
+        if type(puzzle_input) is list:
+            self.grid = puzzle_input
+        else:
+            self.grid: list[list[T]] = [[mapping(c) for c in line] for line in puzzle_input.splitlines()]
 
     def get_candidates(self, corners: bool, bw: int, bh: int) -> Generator[tuple[int, int], None, None]:
         for dx in range(bw):
@@ -71,7 +77,7 @@ class Grid:
         return self.grid[elem]
 
     def __repr__(self):
-        return "\n".join("".join(line) for line in self.grid)
+        return "\n".join("".join(str(c) for c in line) for line in self.grid)
 
     def copy(self):
         return Grid(repr(self))
