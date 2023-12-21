@@ -1,4 +1,3 @@
-import math
 from typing import TYPE_CHECKING, Callable, Generator, Union
 
 if TYPE_CHECKING:
@@ -84,3 +83,11 @@ class Grid[T]:
 
     def __len__(self):
         return len(self.grid)
+
+
+class InfiniteGrid(Grid):
+    def coord_in_grid(self, x: int, y: int) -> bool:
+        return True
+
+    def get(self, x: int, y: int):
+        return super().get(x % self.width, y % self.height)

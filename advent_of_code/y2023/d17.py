@@ -2,21 +2,8 @@ import heapq
 from functools import lru_cache
 
 from tinsel import BaseSolution, Grid
+from tinsel.bfs import PriorityQueue
 from tinsel.consts import DIRS
-
-
-class PriorityQueue[T]:
-    def __init__(self):
-        self.elements: list[tuple[float, T]] = []
-
-    def empty(self) -> bool:
-        return not self.elements
-
-    def put(self, item: T, priority: float):
-        heapq.heappush(self.elements, (priority, item))
-
-    def get(self) -> T:
-        return heapq.heappop(self.elements)[1]
 
 
 class Pathfinder:
