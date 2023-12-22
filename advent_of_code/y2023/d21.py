@@ -39,20 +39,28 @@ class Solution(BaseSolution):
 
         distance_from_center = (g.width - 1) // 2
 
-        even = sum(1 for v in distances if ((v % 2 == 0)))
-        odd = len(distances) - even
+        even_count = 0
+        odd_count = 0
+        even_corner_count = 0
+        odd_corner_count = 0
+
+        for v in distances:
+            if parity := v % 2:
+                odd_count += 1
+            else:
+                even_count += 1
+
+            if v > distance_from_center:
+                if parity:
+                    odd_corner_count += 1
+                else:
+                    even_corner_count += 1
 
         num_squares_in_line = (26501365 - distance_from_center) // (g.width)
 
-        num_even_squares = pow(num_squares_in_line, 2)
-        num_odd_squares = pow(num_squares_in_line + 1, 2)
-
-        even_corners = sum(1 for v in distances if (v % 2 == 0) and v > distance_from_center)
-        odd_corners = sum(1 for v in distances if (v % 2 == 1) and v > distance_from_center)
-
         return (
-            num_odd_squares * odd
-            + num_even_squares * even
-            - (num_squares_in_line + 1) * odd_corners
-            + num_squares_in_line * even_corners
+            pow(num_squares_in_line + 1, 2) * odd_count
+            + pow(num_squares_in_line, 2) * even_count
+            - (num_squares_in_line + 1) * odd_corner_count
+            + num_squares_in_line * even_corner_count
         )
