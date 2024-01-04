@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import cache
 from string import ascii_uppercase
 
 from tinsel import BaseSolution, Grid
@@ -27,6 +28,7 @@ class Node:
         self.directed_edges: list["Edge"] = []
 
         self.id = self.get_id()
+        self.id_hash = hash(self.id)
 
     def add_connection(self, length: int, node: "Node" = None, directed=False):
         if node is None:
@@ -46,8 +48,12 @@ class Node:
             return iter(self.directed_edges)
         return iter(self._edges)
 
+    def connections(self, directed: bool = False):
+        for edge in self.edges(directed):
+            yield edge.length, edge.node
+
     def __hash__(self) -> int:
-        return hash(self.id)
+        return self.id_hash
 
     def __repr__(self) -> str:
         return f"Node({self.id}, {self._edges})"
@@ -141,11 +147,11 @@ class Solution(BaseSolution):
 
         max_len = 0
 
-        for edge in node.edges(directed):
-            if edge.node in seen:
+        for length, next_node in node.connections(directed):
+            if next_node in seen:
                 continue
 
-            max_len = max(max_len, self.maximize_graph(edge.node, seen | {edge.node}, directed) + edge.length)
+            max_len = max(max_len, self.maximize_graph(next_node, seen | {next_node}, directed) + length)
 
         return max_len
 
