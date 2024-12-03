@@ -186,7 +186,7 @@ class Runner:
         elif self.args.year is None or self.args.day is not None:
             day = self.args.day or self._get_latest_day(year) or 1
 
-            self._run_day(year, day, self.args.part)
+            self._run_day(year, day, self.args.part, puzzle_input=self.args.input)
 
         else:
             self._run_all_days(year)
