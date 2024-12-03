@@ -48,12 +48,12 @@ class Runner:
         self.parser.add_argument("-V", "--view-input", action="store_true")
 
         return self.parser.parse_args(namespace=self.Args)
-    
+
     def _left_pad(self, data: str, pad: int):
         pad = " " * pad
 
         return "\n".join(f"{pad}{line}" for line in data.splitlines())
-    
+
     def _load_day(self, year: int, day: int) -> BaseSolution:
         module_path = self._day_path(year, day)
 
@@ -63,7 +63,7 @@ class Runner:
         module = import_module(f"{self.solutions_package}.y{year}.d{day:>02}")
 
         return module.Solution()
-    
+
     def _time_method(self, method, *args, **kwargs):
         begin_time = default_timer()
         res = method(*args, **kwargs)
@@ -72,7 +72,7 @@ class Runner:
         runtime = end_time - begin_time
 
         return res, runtime * 1000
-    
+
     def _run_day(
         self,
         year: int,
@@ -105,7 +105,7 @@ class Runner:
             print(self._left_pad(str(part2_res), 4 + pad), "\n")
 
         return part1_time + part2_time
-    
+
     def _view_input(self, year: int, day: int) -> None:
         input_fetcher = InputFetcher()
         input_file = input_fetcher._get_input_file(year, day)
@@ -137,24 +137,24 @@ class Runner:
             raise Exception(f"Solution file y{year}/d{day:>02} already exists!")
 
         copy(DAY_TEMPLATE, day_path)
-    
+
     def _get_latest_year(self) -> int:
         return max(int(path.name[-4:]) for path in self.solutions_package_path.glob("y*"))
-    
+
     def _get_all_days(self, year) -> list[int]:
         return [int(path.name[-5:-3]) for path in self.solutions_package_path.glob(f"y{year}/d*.py")]
-    
+
     def _get_latest_day(self, year) -> int | None:
         if days := self._get_all_days(year):
             return max(days)
 
         return None
-    
+
     def _get_next_day(self, year) -> int:
         latest = self._get_latest_day(year) or 0
 
         return latest + 1
-    
+
     def _run_all_days(self, year: int) -> float:
         days = self._get_all_days(year)
 
@@ -168,7 +168,7 @@ class Runner:
         print(f"Total Time - {total_time:.2f} ms ({total_time / (len(days)*2):.2f} ms / part)")
 
         return total_time
-        
+
 
     def run(self):
         year = self.args.year or self._get_latest_year()

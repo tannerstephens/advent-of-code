@@ -14,5 +14,5 @@ class Solution(BaseSolution):
         for f in accumulate(cycle(puzzle_input.integers())):
             if f in seen:
                 return f
-            
+
             seen.add(f)

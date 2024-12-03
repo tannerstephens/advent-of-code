@@ -4,7 +4,7 @@ from garland import BaseSolution, PuzzleInput
 def is_ordered(levels: list[int]):
     if all(levels[i] <= levels[i+1] for i in range(len(levels) - 1)):
         return True
-    
+
     return all(levels[i] >= levels[i+1] for i in range(len(levels) - 1))
 
 def is_safe(levels: list[int]):
@@ -14,7 +14,7 @@ def is_safe(levels: list[int]):
 
         if not (1 <= abs(a-b) <= 3):
             return False
-        
+
     if not is_ordered(levels):
         return False
 
@@ -31,8 +31,8 @@ class Solution(BaseSolution):
 
         for levels in puzzle_input.split_integers():
             lv = list(levels)
-            
-            
+
+
 
             if is_safe(lv):
                 self.safe += 1
@@ -45,13 +45,13 @@ class Solution(BaseSolution):
     def part2(self, _: PuzzleInput):
         safe = 0
 
-        for levels in self.unsafe:        
+        for levels in self.unsafe:
             for removal in range(len(levels)):
                 new_levels = levels[:removal] + levels[removal+1:]
 
                 if is_safe(new_levels):
                     safe += 1
                     break
-            
+
 
         return safe + self.safe

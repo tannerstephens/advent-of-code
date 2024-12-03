@@ -1,10 +1,10 @@
 import zoneinfo
+from collections import UserString
 from datetime import datetime, timezone
 from pathlib import Path
 from time import sleep, time
 
 import requests
-from collections import UserString
 
 
 class InputFetcher:
@@ -120,6 +120,3 @@ class InputFetcher:
         self._update_rate_limit()
 
         return aoc_input
-
-    
-

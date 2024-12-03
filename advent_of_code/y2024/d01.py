@@ -1,6 +1,7 @@
+from collections import Counter
+
 from garland import BaseSolution, PuzzleInput
 
-from collections import Counter
 
 class Solution(BaseSolution):
     PART2_DEPENDS_ON_PART1 = True

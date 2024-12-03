@@ -21,7 +21,7 @@ class PuzzleInput(UserString):
         data = fetcher.get_input(year, day)
 
         return cls(data.strip())
-        
+
     def batched_integers(self, batch_size: int) -> Generator[tuple[int, ...], None, None]:
         for batch in batched(INTEGER_REGEX.findall(self.data), batch_size):
             yield map(int, batch)
@@ -41,3 +41,13 @@ class PuzzleInput(UserString):
     def split_integers(self, sep=None) -> Generator[Generator[int, None, None], None, None]:
         for line in self.splitlines():
             yield map(int, line.split(sep))
+
+    def findall(self, regexp: str):
+        regex = compile(regexp)
+
+        return regex.findall(self.data)
+
+    def finditer(self, regexp: str):
+        regex = compile(regexp)
+
+        return regex.finditer(self.data)
