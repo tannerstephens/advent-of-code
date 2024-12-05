@@ -38,9 +38,10 @@ class PuzzleInput(UserString):
         for line in self.splitlines():
             yield PuzzleInput(line)
 
-    def split_integers(self, sep=None) -> Generator[Generator[int, None, None], None, None]:
+    def split_integers(self, sep=None) -> Generator[int, None, None]:
         for line in self.splitlines():
-            yield map(int, line.split(sep))
+            for n in map(int, line.split(sep)):
+                yield n
 
     def findall(self, regexp: str):
         regex = compile(regexp)
@@ -51,3 +52,6 @@ class PuzzleInput(UserString):
         regex = compile(regexp)
 
         return regex.finditer(self.data)
+
+    def split(self, sep=None):
+        return [PuzzleInput(d) for d in super().split(sep)]

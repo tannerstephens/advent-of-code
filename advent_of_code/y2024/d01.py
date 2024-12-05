@@ -1,4 +1,5 @@
 from collections import Counter
+from itertools import batched
 
 from garland import BaseSolution, PuzzleInput
 
@@ -10,7 +11,7 @@ class Solution(BaseSolution):
         self.left = []
         self.right = []
 
-        for a, b in puzzle_input.split_integers():
+        for a, b in batched(puzzle_input.split_integers(), 2):
             self.left.append(a)
             self.right.append(b)
 

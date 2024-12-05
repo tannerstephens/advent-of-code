@@ -1,5 +1,3 @@
-from functools import reduce
-
 from garland import BaseSolution, PuzzleInput
 
 MUL_REGEX = r"mul\((-?\d+),(-?\d+)\)"

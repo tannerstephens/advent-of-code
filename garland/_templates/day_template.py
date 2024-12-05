@@ -1,4 +1,5 @@
 from garland import BaseSolution, PuzzleInput
+from garland.utils import *
 
 
 class Solution(BaseSolution):

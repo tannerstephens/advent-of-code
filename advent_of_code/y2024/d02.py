@@ -29,10 +29,8 @@ class Solution(BaseSolution):
         self.safe = 0
         self.unsafe = []
 
-        for levels in puzzle_input.split_integers():
-            lv = list(levels)
-
-
+        for report in puzzle_input.lines():
+            lv = list(report.split_integers())
 
             if is_safe(lv):
                 self.safe += 1
