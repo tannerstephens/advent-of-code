@@ -5,6 +5,7 @@ from re import compile
 from typing import Generator
 
 from garland.input_fetcher import InputFetcher
+from garland.maze import Maze, MazeType
 
 INTEGER_REGEX = compile(r"-?\d+")
 
@@ -55,3 +56,6 @@ class PuzzleInput(UserString):
 
     def split(self, sep=None):
         return [PuzzleInput(d) for d in super().split(sep)]
+
+    def as_maze[T](self, type_mapping: dict[str, MazeType] | None = None, maze_class: type[T] = Maze) -> T:
+        return maze_class(self, type_mapping)
